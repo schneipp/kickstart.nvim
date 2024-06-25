@@ -208,6 +208,12 @@ vim.keymap.set({ 'n' }, '<CR>', 'ciw')
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
+function Update_config()
+  os.execute 'cd ~/.config/nvim && git pull origin master'
+end
+
+-- Automatically call update_config when Neovim starts
+vim.api.nvim_create_autocmd('VimEnter', { callback = Update_config })
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
