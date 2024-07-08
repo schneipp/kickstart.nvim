@@ -23,6 +23,7 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'ldelossa/nvim-dap-projects',
   },
   config = function()
     local dap = require 'dap'
@@ -42,15 +43,21 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'cpptools',
+        'codelldb',
       },
     }
 
     -- Basic debugging keymaps, feel free to change to your liking!
+    vim.keymap.set('n', '<leader>dd', dap.continue, { desc = 'Debug: Start/Continue' })
     vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
-    vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
-    vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
-    vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
+    vim.keymap.set('n', '<leader>dc', dap.continue, { desc = 'Debug: Start/Continue' })
+    vim.keymap.set('n', '<leader>dsi', dap.step_into, { desc = 'Debug: Step Into' })
+    vim.keymap.set('n', '<leader>dso', dap.step_over, { desc = 'Debug: Step Over' })
+    vim.keymap.set('n', '<leader>dsO', dap.step_out, { desc = 'Debug: Step Out' })
     vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
+    vim.keymap.set('n', '<leader>de', dap.disconnect, { desc = 'Debug: Toggle Breakpoint' })
+    vim.keymap.set('n', '<leader>dt', dap.terminate, { desc = 'Debug: Toggle Breakpoint' })
     vim.keymap.set('n', '<leader>B', function()
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
     end, { desc = 'Debug: Set Breakpoint' })
@@ -76,7 +83,9 @@ return {
         },
       },
     }
-
+    vim.keymap.set('n', '<leader>di', function()
+      require('dapui').eval(nil, { enter = true })
+    end)
     -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
 
@@ -92,5 +101,31 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+    local codelldb_adapter = {
+      type = 'server',
+      port = '${port}',
+      executable = {
+        command = '/Users/rams/.local/codelldb/extension/adapter/codelldb',
+        args = { '--port', '${port}' },
+        -- On windows you may have to uncomment this:
+        -- detached = false,
+      },
+    }
+    dap.adapters.lldb = codelldb_adapter
+    dap.configurations.rust = {
+      {
+        type = 'lldb',
+        name = 'Launch',
+        request = 'launch',
+        program = function()
+          return vim.fn.input 'Path to executable: '
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+        runInTerminal = true,
+      },
+    }
+    require('nvim-dap-projects').search_project_config()
   end,
 }
