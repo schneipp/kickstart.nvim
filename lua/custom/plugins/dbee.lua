@@ -12,6 +12,6 @@ return {
   config = function()
     require('dbee').setup()
   end,
-  vim.keymap.set('n', '<leader>db', ':lua require("dbee").toggle()\n'),
+  -- vim.keymap.set('n', '<leader>db', ':lua require("dbee").toggle()\n'),
   vim.keymap.set('n', '<leader>dyc', ':lua require("dbee").store("csv", "yank", { })'),
 }

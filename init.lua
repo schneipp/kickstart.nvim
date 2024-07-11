@@ -206,6 +206,9 @@ vim.keymap.set({ 'n' }, 'N', 'Nzzzv')
 vim.keymap.set({ 'n' }, 'J', 'mzJ`z')
 vim.keymap.set({ 'n' }, '<CR>', 'ciw')
 
+vim.keymap.set({ 'n' }, '<C-n>', ':tabnew<cr>')
+vim.keymap.set({ 'n' }, '<leader>tn', ':tabnext<cr>')
+-- bind tabnext to leader+tn
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 function Update_config()
@@ -592,7 +595,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        gopls = {},
+        -- gopls = {},
         pyright = {},
         rust_analyzer = {},
         intelephense = {},
@@ -797,6 +800,16 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
         },
+
+        -- Setup vim-dadbod
+        cmp.setup.filetype({ 'sql' }, {
+          sources = {
+            { name = 'vim-dadbod-completion' },
+            { name = 'buffer' },
+            { name = 'nvim_lsp' },
+            { name = 'luasnip' },
+          },
+        }),
       }
     end,
   },
@@ -944,5 +957,17 @@ require('lazy').setup({
   },
 })
 
+-- Autocmd to trigger when an unlisted buffer is created
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = '*',
+  callback = function()
+    if vim.bo.buftype == 'nofile' and vim.bo.buflisted == false then
+      vim.cmd 'Copilot! attach'
+    end
+  end,
+})
+vim.cmd.colorscheme 'monokai-pro'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+--
+--
