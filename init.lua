@@ -826,6 +826,12 @@ require('lazy').setup({
         require('monokai-pro').setup()
       end,
     },
+    {
+      'EdenEast/nightfox.nvim',
+      config = function()
+        require('nightfox').load()
+      end,
+    },
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
@@ -833,7 +839,8 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       -- vim.cmd.colorscheme 'tokyonight-night'
-      vim.cmd.colorscheme 'monokai-pro'
+      -- vim.cmd.colorscheme 'monokai-pro'
+      vim.cmd.colorscheme 'nightfox'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -895,6 +902,15 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          -- init_selection = 'gnn',
+          node_incremental = 'v',
+          -- scope_incremental = 'grc',
+          node_decremental = 'V',
+        },
+      },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -903,7 +919,6 @@ require('lazy').setup({
       require('nvim-treesitter.install').prefer_git = true
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
-
       -- There are additional nvim-treesitter modules that you can use to interact
       -- with nvim-treesitter. You should go explore a few and see what interests you:
       --
@@ -966,7 +981,6 @@ vim.api.nvim_create_autocmd('BufEnter', {
     end
   end,
 })
-vim.cmd.colorscheme 'monokai-pro'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 --
